@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cancelar Marcação – Rita Albino</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'DM Sans',sans-serif;background:#2b0e1c;color:#f0ece4;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+  .card{background:#3d1428;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:32px 28px;max-width:420px;width:100%;text-align:center}
+  .brand{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:#d94f85;margin-bottom:24px}
+  .brand-logo{width:56px;height:56px;border-radius:50%;overflow:hidden;border:2px solid #d94f85;margin:0 auto 14px;box-shadow:0 4px 16px rgba(0,0,0,0.35);}
+  .brand-logo img{width:100%;height:100%;object-fit:cover;transform:scale(1.16);display:block;}
+  .icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:26px}
+  .icon-warning{background:rgba(200,160,60,0.12);border:2px solid #d94f85}
+  .icon-success{background:rgba(40,180,100,0.12);border:2px solid #28b464}
+  .icon-error{background:rgba(224,82,82,0.12);border:2px solid #e05252}
+  h1{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:10px}
+  p{font-size:14px;color:rgba(240,236,228,0.55);line-height:1.7;margin-bottom:8px}
+  .summary{background:#33101f;border:1px solid rgba(200,160,60,0.2);border-radius:10px;padding:16px;margin:20px 0;text-align:left}
+  .summary-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+  .summary-row:last-child{border-bottom:none}
+  .summary-label{font-size:13px;color:rgba(240,236,228,0.4)}
+  .summary-value{font-size:13px;font-weight:500}
+  .btn-danger{width:100%;background:#c0392b;color:#fff;border:none;border-radius:10px;padding:15px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all .2s;margin-top:8px}
+  .btn-danger:hover{background:#e74c3c}
+  .btn-danger:disabled{opacity:.4;cursor:not-allowed}
+  .btn-secondary{width:100%;background:#4f1a34;color:rgba(240,236,228,0.6);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:15px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all .2s;margin-top:8px}
+  .btn-secondary:hover{background:#5c2140}
+  .btn-link{display:inline-block;margin-top:20px;background:#d94f85;color:#2b0e1c;border:none;border-radius:10px;padding:14px 28px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;text-decoration:none}
+  .site-footer{text-align:center;margin-top:24px;font-size:11px;color:rgba(240,236,228,0.28);letter-spacing:0.3px}
+  .site-footer a{color:rgba(200,160,60,0.55);text-decoration:none}
+  .site-footer a:hover{color:#d94f85;text-decoration:underline}
+  .spinner{width:28px;height:28px;border:2px solid rgba(200,160,60,0.2);border-top-color:#d94f85;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand-logo"><img src="logo-icon.png" alt="Casablanca"></div>
+  <div class="brand">Rita Albino</div>
+  <div id="stateLoading">
+    <div class="icon icon-warning"><div class="spinner"></div></div>
+    <h1>A verificar...</h1>
+  </div>
+  <div id="stateConfirm" class="hidden">
+    <div class="icon icon-warning">⚠️</div>
+    <h1>Cancelar marcação?</h1>
+    <p>Tens a certeza que queres cancelar?</p>
+    <div class="summary" id="summaryConfirm"></div>
+    <button class="btn-danger" id="btnCancelar" onclick="confirmarCancelamento()">Sim, cancelar</button>
+    <button class="btn-secondary" onclick="window.history.back()">Não, manter</button>
+  </div>
+  <div id="stateSuccess" class="hidden">
+    <div class="icon icon-success">✓</div>
+    <h1>Marcação cancelada</h1>
+    <p>A tua marcação foi cancelada com sucesso.</p>
+    <div class="summary" id="summarySuccess"></div>
+    <a href="https://ritaalbino.ficamarcado.com" class="btn-link">Voltar à página inicial</a>
+  </div>
+  <div id="stateAlready" class="hidden">
+    <div class="icon icon-error">✕</div>
+    <h1>Já cancelada</h1>
+    <p>Esta marcação já foi cancelada anteriormente.</p>
+    <a href="https://ritaalbino.ficamarcado.com" class="btn-link">Voltar à página inicial</a>
+  </div>
+  <div id="stateError" class="hidden">
+    <div class="icon icon-error">✕</div>
+    <h1>Link inválido</h1>
+    <p>Não foi possível encontrar esta marcação.</p>
+    <a href="https://ritaalbino.ficamarcado.com" class="btn-link">Voltar à página inicial</a>
+  </div>
+</div>
+
+<div class="site-footer">
+  Site criado por <a href="mailto:ficamarcadopt@gmail.com">FicaMarcado</a>
+</div>
+
+<script>
+var SCRIPT_URL = 'SUBSTITUIR_PELO_URL_DO_APPS_SCRIPT_DA_RITA';
+var id = new URL(window.location.href).searchParams.get('id');
+var dadosReserva = null;
+
+function showState(s) {
+  ['stateLoading','stateConfirm','stateSuccess','stateAlready','stateError'].forEach(function(st){
+    document.getElementById(st).classList.toggle('hidden', st !== s);
+  });
+}
+
+function summaryHTML(r) {
+  return '<div class="summary-row"><span class="summary-label">Serviço</span><span class="summary-value">'+r.servico+'</span></div>' +
+         '<div class="summary-row"><span class="summary-label">Data</span><span class="summary-value">'+r.data+'</span></div>' +
+         '<div class="summary-row"><span class="summary-label">Hora</span><span class="summary-value">'+r.hora+'</span></div>' +
+         '<div class="summary-row"><span class="summary-label">Nome</span><span class="summary-value">'+r.nome+'</span></div>';
+}
+
+if (!id) {
+  showState('stateError');
+} else {
+  // Primeiro verificar se existe - usar cancelar para mostrar dados antes de confirmar
+  // Criamos uma pre-verificacao simples mostrando o formulario de confirmacao
+  fetch(SCRIPT_URL + '?acao=cancelar&id=' + id + '&preview=1')
+    .then(function(r){ return r.json(); })
+    .then(function(res) {
+      if (res.status === 'nao_encontrado' || res.status === 'erro') {
+        showState('stateError');
+      } else if (res.status === 'ja_cancelado') {
+        showState('stateAlready');
+      } else if (res.status === 'cancelado') {
+        // Já cancelou (sem preview)
+        dadosReserva = res;
+        document.getElementById('summaryConfirm').innerHTML = summaryHTML(res);
+        showState('stateConfirm');
+      } else {
+        showState('stateError');
+      }
+    })
+    .catch(function(){ showState('stateError'); });
+}
+
+function confirmarCancelamento() {
+  var btn = document.getElementById('btnCancelar');
+  btn.disabled = true; btn.textContent = 'A cancelar...';
+
+  fetch(SCRIPT_URL + '?acao=cancelar&id=' + id)
+    .then(function(r){ return r.json(); })
+    .then(function(res) {
+      if (res.status === 'cancelado') {
+        document.getElementById('summarySuccess').innerHTML = summaryHTML(res);
+        showState('stateSuccess');
+      } else if (res.status === 'ja_cancelado') {
+        showState('stateAlready');
+      } else {
+        showState('stateError');
+      }
+    })
+    .catch(function(){ showState('stateError'); });
+}
+</script>
+</body>
+</html>

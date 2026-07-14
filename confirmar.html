@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmar Marcação – Rita Albino</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:#2b0e1c; color:#f0ece4; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; }
+  .card { background:#3d1428; border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:32px 28px; max-width:420px; width:100%; text-align:center; }
+  .icon { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:28px; }
+  .icon-loading { background:rgba(200,160,60,0.1); border:2px solid rgba(200,160,60,0.3); }
+  .icon-success { background:rgba(40,180,100,0.15); border:2px solid #28b464; }
+  .icon-error { background:rgba(220,60,60,0.15); border:2px solid #dc3c3c; }
+  .icon-already { background:rgba(200,160,60,0.15); border:2px solid #d94f85; }
+  h1 { font-family:'Playfair Display',serif; font-size:24px; margin-bottom:10px; }
+  p { font-size:14px; color:rgba(240,236,228,0.55); line-height:1.7; }
+  .summary { background:#33101f; border:1px solid rgba(200,160,60,0.2); border-radius:10px; padding:16px; margin:20px 0; text-align:left; }
+  .summary-row { display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .summary-row:last-child { border-bottom:none; }
+  .summary-label { font-size:13px; color:rgba(240,236,228,0.4); }
+  .summary-value { font-size:13px; font-weight:500; color:#f0ece4; }
+  .brand { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#d94f85; margin-bottom:24px; }
+  .brand-logo{width:56px;height:56px;border-radius:50%;overflow:hidden;border:2px solid #d94f85;margin:0 auto 14px;box-shadow:0 4px 16px rgba(0,0,0,0.35);}
+  .brand-logo img{width:100%;height:100%;object-fit:cover;transform:scale(1.16);display:block;}
+  .spinner { width:28px; height:28px; border:2px solid rgba(200,160,60,0.2); border-top-color:#d94f85; border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .hidden { display:none; }
+  .btn { display:inline-block; margin-top:20px; background:#d94f85; color:#2b0e1c; border:none; border-radius:10px; padding:14px 28px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; cursor:pointer; text-decoration:none; }
+  .site-footer { text-align:center; margin-top:24px; font-size:11px; color:rgba(240,236,228,0.28); letter-spacing:0.3px; }
+  .site-footer a { color:rgba(200,160,60,0.55); text-decoration:none; }
+  .site-footer a:hover { color:#d94f85; text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand-logo"><img src="logo-icon.png" alt="Casablanca"></div>
+  <div class="brand">Rita Albino</div>
+
+  <div id="stateLoading">
+    <div class="icon icon-loading"><div class="spinner"></div></div>
+    <h1>A confirmar...</h1>
+    <p>Aguarda um momento.</p>
+  </div>
+
+  <div id="stateSuccess" class="hidden">
+    <div class="icon icon-success">✓</div>
+    <h1>Marcação confirmada!</h1>
+    <p>A tua marcação ficou registada. Até já!</p>
+    <div class="summary" id="summarySuccess"></div>
+    <a href="https://ritaalbino.ficamarcado.com" class="btn">Voltar à página inicial</a>
+  </div>
+
+  <div id="stateAlready" class="hidden">
+    <div class="icon icon-already">✓</div>
+    <h1>Já confirmada</h1>
+    <p>Esta marcação já foi confirmada anteriormente.</p>
+    <a href="https://ritaalbino.ficamarcado.com" class="btn">Voltar à página inicial</a>
+  </div>
+
+  <div id="stateCanceled" class="hidden">
+    <div class="icon icon-error">✕</div>
+    <h1>Marcação cancelada</h1>
+    <p>Esta marcação foi cancelada e não pode ser confirmada.</p>
+    <a href="https://ritaalbino.ficamarcado.com" class="btn">Voltar à página inicial</a>
+  </div>
+
+  <div id="stateExpired" class="hidden">
+    <div class="icon icon-error">⏱</div>
+    <h1>Prazo expirado</h1>
+    <p>Não confirmaste a tempo (10 minutos). Por favor, faz a marcação novamente.</p>
+    <a href="https://ritaalbino.ficamarcado.com" class="btn">Marcar novamente</a>
+  </div>
+
+  <div id="stateError" class="hidden">
+    <div class="icon icon-error">✕</div>
+    <h1>Link inválido</h1>
+    <p>Não foi possível encontrar esta marcação. O link pode ter expirado.</p>
+    <a href="https://ritaalbino.ficamarcado.com" class="btn">Voltar à página inicial</a>
+  </div>
+</div>
+
+<div class="site-footer">
+  Site criado por <a href="mailto:ficamarcadopt@gmail.com">FicaMarcado</a>
+</div>
+
+<script>
+var SCRIPT_URL = 'SUBSTITUIR_PELO_URL_DO_APPS_SCRIPT_DA_RITA';
+
+function show(id) {
+  ['stateLoading','stateSuccess','stateAlready','stateCanceled','stateExpired','stateError'].forEach(function(s) {
+    document.getElementById(s).classList.toggle('hidden', s !== id);
+  });
+}
+
+function summaryHTML(res) {
+  return '<div class="summary-row"><span class="summary-label">Serviço</span><span class="summary-value">' + (res.servico||'—') + '</span></div>' +
+         '<div class="summary-row"><span class="summary-label">Data</span><span class="summary-value">' + (res.data||'—') + '</span></div>' +
+         '<div class="summary-row"><span class="summary-label">Hora</span><span class="summary-value">' + (res.hora||'—') + '</span></div>';
+}
+
+var id = new URL(window.location.href).searchParams.get('id');
+
+if (!id) {
+  show('stateError');
+} else {
+  fetch(SCRIPT_URL + '?acao=confirmar&id=' + id)
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (res.status === 'confirmado') {
+        document.getElementById('summarySuccess').innerHTML = summaryHTML(res);
+        show('stateSuccess');
+      } else if (res.status === 'ja_confirmado') {
+        show('stateAlready');
+      } else if (res.status === 'cancelado') {
+        show('stateCanceled');
+      } else if (res.status === 'expirado') {
+        show('stateExpired');
+      } else {
+        show('stateError');
+      }
+    })
+    .catch(function() { show('stateError'); });
+}
+</script>
+</body>
+</html>
