@@ -44,7 +44,11 @@
   }
   .hero-logo img { width:100%; height:100%; object-fit:cover; transform:scale(1.16); display:block; }
   .hero h1 { font-family:'Playfair Display',serif; font-size:34px; font-weight:700; line-height:1.1; position:relative; z-index:1; }
-  .hero-sub { font-size:12px; color:var(--white2); margin-top:8px; position:relative; z-index:1; letter-spacing:1.5px; text-transform:uppercase; }
+  .hero-tagline {
+    font-family:'Playfair Display',serif; font-style:italic; font-size:14px;
+    color:var(--gold2); margin-top:6px; position:relative; z-index:1; letter-spacing:0.3px;
+  }
+  .hero-sub { font-size:11px; color:var(--white2); margin-top:10px; position:relative; z-index:1; letter-spacing:1.5px; text-transform:uppercase; }
   .hero-divider { position:relative; height:1px; background:linear-gradient(90deg,transparent,rgba(200,160,60,0.5),transparent); }
   .hero-divider span {
     position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
@@ -189,6 +193,7 @@
 <div class="hero">
   <div class="hero-logo"><img src="logo-icon.png" alt="Rita Albino"></div>
   <h1 onclick="location.reload()" style="cursor:pointer">Rita Albino</h1>
+  <div class="hero-tagline">Laser &amp; Unhas de Gel</div>
   <div class="hero-sub" id="heroSub">A carregar...</div>
 </div>
 <div class="hero-divider"><span>✦</span></div>
@@ -262,6 +267,7 @@
       <div class="success-icon">✉</div>
       <h2>Verifica o teu email!</h2>
       <p>Enviámos um email de confirmação para <strong id="confEmail"></strong>.<br><br>Clica no link do email para confirmar a marcação.<br>Sem confirmação a reserva não fica registada.</p>
+      <p style="font-size:12px; color:var(--white2); margin-top:14px;">Não encontras o email? Verifica também a pasta de spam ou lixo eletrónico.</p>
       <div class="summary-card" style="margin-top:28px; text-align:left">
         <div class="summary-row"><span class="summary-label">Serviço</span><span class="summary-value" id="confServico">—</span></div>
         <div class="summary-row"><span class="summary-label">Data</span><span class="summary-value" id="confData">—</span></div>
@@ -311,7 +317,7 @@ function carregarConfig(tentativa) {
 function atualizarHeroSub() {
   if (!config) return;
   // Mostrar horário geral (ex: Seg-Sex 09h-19h)
-  document.getElementById('heroSub').textContent = 'Caldas da Rainha';
+  document.getElementById('heroSub').textContent = 'Caldas da Rainha · Marcações Online';
 }
 
 // ─── STEP 1: SERVICOS ───────────────────────────────────
